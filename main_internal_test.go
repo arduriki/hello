@@ -3,12 +3,50 @@ package main
 import "testing"
 
 func TestGreet(t *testing.T) {
-	want := "Hello world"
+	type testCase struct {
+		lang language
+		want string
+	}
 
-	got := greet()
+	var tests = map[string]testCase{
+		"English": {
+			lang: "en",
+			want: "Hello world",
+		},
+		"French": {
+			lang: "fr",
+			want: "Bonjour le monde",
+		},
+		"Akkadian, not supported": {
+			lang: "akk",
+			want: `unsupported language: "akk"`,
+		},
+		"Greek": {
+			lang: "el",
+			want: "Χαίρετε Κόσμε",
+		},
+		"Urdu": {
+			lang: "ur",
+			want: "ہیلو دنیا",
+		},
+		"Vietnamese": {
+			lang: "vi",
+			want: "Xin chào Thế Giới",
+		},
+		"Empty": {
+			lang: "",
+			want: `unsupported language: ""`,
+		},
+	}
 
-	if got != want {
-		// mark this test as failed
-		t.Errorf("expected %q, got: %q", want, got)
+	// range over all the scenarios
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
+			got := greet(tc.lang)
+
+			if got != tc.want {
+				t.Errorf("expected: %q, got: %q", tc.want, got)
+			}
+		})
 	}
 }
